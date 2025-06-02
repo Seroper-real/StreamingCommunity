@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libxml2-dev \
     libxslt1-dev \
+    screen \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -16,4 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "test_run.py"]
+# Rimuove config.json se esiste
+RUN rm -f config.json
+# Rinomina config-docker.json in config.json
+RUN mv config-docker.json config.json
+
+RUN chmod +x start.sh
+
+ENTRYPOINT ["./start.sh"]
+CMD ["script"]

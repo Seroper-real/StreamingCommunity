@@ -37,25 +37,27 @@
 - 🔄 [Update Domains](#update-domains)
 - 🌐 [Available Sites](https://arrowar.github.io/StreamingCommunity/)
 - 🛠️ [Installation](#installation)
-    - 📦 [PyPI Installation](#1-pypi-installation)
-    - 🔄 [Automatic Installation](#2-automatic-installation)
-    - 🔧 [Binary Location](#binary-location)
-    - 📝 [Manual Installation](#3-manual-installation)
-        - 💻 [Win 7](https://github.com/Ghost6446/StreamingCommunity_api/wiki/Installation#win-7)
-        - 📱 [Termux](https://github.com/Ghost6446/StreamingCommunity_api/wiki/Termux)
+  - 📦 [PyPI Installation](#1-pypi-installation)
+  - 🔄 [Automatic Installation](#2-automatic-installation)
+  - 🔧 [Binary Location](#binary-location)
+  - 📝 [Manual Installation](#3-manual-installation)
+    - 💻 [Win 7](https://github.com/Ghost6446/StreamingCommunity_api/wiki/Installation#win-7)
+    - 📱 [Termux](https://github.com/Ghost6446/StreamingCommunity_api/wiki/Termux)
+
 </details>
 
 <details>
 <summary>⚙️ Configuration & Usage</summary>
 
 - ⚙️ [Configuration](#configuration)
-    - 🔧 [Default](#default-settings)
-    - 📩 [Request](#requests-settings)
-    - 📥 [Download](#m3u8_download-settings)
-    - 🔍 [Parser](#m3u8_parser-settings)
+  - 🔧 [Default](#default-settings)
+  - 📩 [Request](#requests-settings)
+  - 📥 [Download](#m3u8_download-settings)
+  - 🔍 [Parser](#m3u8_parser-settings)
 - 📝 [Command](#command)
 - 🔍 [Global search](#global-search)
 - 💻 [Examples of terminal](#examples-of-terminal-usage)
+
 </details>
 
 <details>
@@ -64,6 +66,7 @@
 - 🔧 [Manual domain configuration](#update-domains)
 - 🐳 [Docker](#docker)
 - 📝 [Telegram Usage](#telegram-usage)
+
 </details>
 
 <details>
@@ -72,6 +75,7 @@
 - 🎓 [Tutorial](#tutorials)
 - 📝 [To do](#to-do)
 - ⚠️ [Disclaimer](#disclaimer)
+
 </details>
 
 # Installation
@@ -146,6 +150,7 @@ downloader.download()
 ```
 
 See [HLS example](./Test/Download/HLS.py) for complete usage.
+
 </details>
 
 <details>
@@ -178,6 +183,7 @@ downloader.download()
 ```
 
 See [MP4 example](./Test/Download/MP4.py) for complete usage.
+
 </details>
 
 <details>
@@ -199,6 +205,7 @@ client.start_download()
 ```
 
 See [Torrent example](./Test/Download/TOR.py) for complete usage.
+
 </details>
 
 ## Binary Location
@@ -209,6 +216,7 @@ See [Torrent example](./Test/Download/TOR.py) for complete usage.
 - **Windows**: `C:\binary`
 - **MacOS**: `~/Applications/binary`
 - **Linux**: `~/.local/bin/binary`
+
 </details>
 
 <details>
@@ -225,6 +233,7 @@ See [Torrent example](./Test/Download/TOR.py) for complete usage.
    - Click "OK" to save changes
 
 For detailed Windows PATH instructions, see the [Windows PATH guide](https://www.eukhost.com/kb/how-to-add-to-the-path-on-windows-10-and-windows-11/).
+
 </details>
 
 <details>
@@ -247,6 +256,7 @@ For detailed Windows PATH instructions, see the [Windows PATH guide](https://www
    # For zsh
    source ~/.zshrc
    ```
+
 </details>
 
 <details>
@@ -267,10 +277,12 @@ For detailed Windows PATH instructions, see the [Windows PATH guide](https://www
    # or
    source ~/.zshrc    # for zsh
    ```
+
 </details>
 
 > [!IMPORTANT]
 > After moving the binary folder, ensure that all executables (ffmpeg, ffprobe, ffplay) are present in the new location and have the correct permissions:
+>
 > - Windows: `.exe` extensions required
 > - MacOS/Linux: Ensure files have execute permissions (`chmod +x filename`)
 
@@ -280,8 +292,10 @@ For detailed Windows PATH instructions, see the [Windows PATH guide](https://www
 <summary>📋 Requirements</summary>
 
 Prerequisites:
+
 * [Python](https://www.python.org/downloads/) > 3.8
 * [FFmpeg](https://www.gyan.dev/ffmpeg/builds/)
+
 </details>
 
 <details>
@@ -290,6 +304,7 @@ Prerequisites:
 ```bash
 pip install -r requirements.txt
 ```
+
 </details>
 
 <details>
@@ -306,6 +321,7 @@ python test_run.py
 ```bash
 python3 test_run.py
 ```
+
 </details>
 
 ## Update
@@ -336,8 +352,8 @@ There are two ways to update the domains for the supported websites:
 ### 1. Using Local Configuration
 
 1. Create a `domains.json` file in the root directory of the project
-
 2. Add your domain configuration in the following format:
+
    ```json
    {
       "altadefinizione": {
@@ -347,8 +363,8 @@ There are two ways to update the domains for the supported websites:
       ...
    }
    ```
-   
 3. Set `use_api` to `false` in the `DEFAULT` section of your `config.json`:
+
    ```json
    {
       "DEFAULT": {
@@ -364,6 +380,7 @@ The API-based domain updates are currently deprecated. To use it anyway, set `us
 Note: If `use_api` is set to `false` and no `domains.json` file is found, the script will raise an error.
 
 #### 💡 Adding a New Site to the Legacy API
+
 If you want to add a new site to the legacy API, just message me on the Discord server, and I'll add it!
 
 </details>
@@ -374,6 +391,7 @@ If you want to add a new site to the legacy API, just message me on the Discord 
 <summary>⚙️ Overview</summary>
 
 You can change some behaviors by tweaking the configuration file. The configuration file is divided into several main sections.
+
 </details>
 
 <details>
@@ -405,6 +423,7 @@ You can change some behaviors by tweaking the configuration file. The configurat
 - `telegram_bot`: Enables Telegram bot integration
 - `download_site_data`: If set to false, disables automatic site data download
 - `validate_github_config`: If set to false, disables validation and updating of configuration from GitHub
+
 </details>
 
 <details>
@@ -424,16 +443,19 @@ You can change some behaviors by tweaking the configuration file. The configurat
 ```
 
 #### Directory Configuration
+
 - `root_path`: Directory where all videos will be saved
   * Windows: `C:\\MyLibrary\\Folder` or `\\\\MyServer\\MyLibrary` (network folder)
   * Linux/MacOS: `Desktop/MyLibrary/Folder`
 
 #### Folder Names
+
 - `movie_folder_name`: Subdirectory for movies (can be changed with `--movie_folder_name`)
 - `serie_folder_name`: Subdirectory for TV series (can be changed with `--serie_folder_name`)
 - `anime_folder_name`: Subdirectory for anime (can be changed with `--anime_folder_name`)
 
 #### Episode Naming
+
 - `map_episode_name`: Template for episode filenames
   * `%(tv_name)`: Name of TV Show
   * `%(season)`: Season number
@@ -442,7 +464,9 @@ You can change some behaviors by tweaking the configuration file. The configurat
   * Can be changed with `--map_episode_name`
 
 #### Additional Options
+
 - `add_siteName`: Appends site_name to root path (can be changed with `--add_siteName true/false`)
+
 </details>
 
 <details>
@@ -460,6 +484,7 @@ You can change some behaviors by tweaking the configuration file. The configurat
 ```
 
 To enable qBittorrent integration, follow the setup guide [here](https://github.com/lgallard/qBittorrent-Controller/wiki/How-to-enable-the-qBittorrent-Web-UI).
+
 </details>
 
 <details>
@@ -498,6 +523,7 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
         "https": "https://host:port"
     }
     ```
+
 </details>
 
 <details>
@@ -527,6 +553,7 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
 ```
 
 #### Performance Settings
+
 - `tqdm_delay`: Delay between progress bar updates
 - `default_video_workser`: Number of threads for video download
   * Can be changed with `--default_video_worker <number>`
@@ -535,34 +562,39 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
 - `segment_timeout`: Timeout for downloading individual segments
 
 #### Audio Settings
+
 - `download_audio`: Whether to download audio tracks
 - `merge_audio`: Whether to merge audio with video
 - `specific_list_audio`: List of audio languages to download
   * Can be changed with `--specific_list_audio ita,eng`
 
 #### Subtitle Settings
+
 - `download_subtitle`: Whether to download subtitles
 - `merge_subs`: Whether to merge subtitles with video
 - `specific_list_subtitles`: List of subtitle languages to download
   * Can be changed with `--specific_list_subtitles ita,eng`
 
 #### Cleanup
+
 - `cleanup_tmp_folder`: Remove temporary .ts files after download
+
 </details>
 
 <details>
 <summary>🌍 Available Language Codes</summary>
 
-| European        | Asian           | Middle Eastern  | Others          |
-|-----------------|-----------------|-----------------|-----------------|
-| ita - Italian   | chi - Chinese   | ara - Arabic    | eng - English   |
-| spa - Spanish   | jpn - Japanese  | heb - Hebrew    | por - Portuguese|
-| fre - French    | kor - Korean    | tur - Turkish   | fil - Filipino  |
-| ger - German    | hin - Hindi     |                 | ind - Indonesian|
-| rus - Russian   | mal - Malayalam |                 | may - Malay     |
-| swe - Swedish   | tam - Tamil     |                 | vie - Vietnamese|
-| pol - Polish    | tel - Telugu    |                 |                 |
-| ukr - Ukrainian | tha - Thai      |                 |                 |
+| European        | Asian           | Middle Eastern | Others           |
+| --------------- | --------------- | -------------- | ---------------- |
+| ita - Italian   | chi - Chinese   | ara - Arabic   | eng - English    |
+| spa - Spanish   | jpn - Japanese  | heb - Hebrew   | por - Portuguese |
+| fre - French    | kor - Korean    | tur - Turkish  | fil - Filipino   |
+| ger - German    | hin - Hindi     |                | ind - Indonesian |
+| rus - Russian   | mal - Malayalam |                | may - Malay      |
+| swe - Swedish   | tam - Tamil     |                | vie - Vietnamese |
+| pol - Polish    | tel - Telugu    |                |                  |
+| ukr - Ukrainian | tha - Thai      |                |                  |
+
 </details>
 
 <details>
@@ -582,6 +614,7 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
 ```
 
 #### Basic Settings
+
 - `use_codec`: Use specific codec settings
 - `use_vcodec`: Use specific video codec
 - `use_acodec`: Use specific audio codec
@@ -590,7 +623,9 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
 - `default_preset`: FFmpeg encoding preset
 
 #### Encoding Presets
+
 The `default_preset` configuration can be set to:
+
 - `ultrafast`: Extremely fast conversion but larger file size
 - `superfast`: Very fast with good quality/size ratio
 - `veryfast`: Fast with good compression
@@ -602,12 +637,15 @@ The `default_preset` configuration can be set to:
 - `veryslow`: Maximum quality, very slow process
 
 #### GPU Acceleration
+
 When `use_gpu` is enabled, supports:
-- NVIDIA: NVENC 
+
+- NVIDIA: NVENC
 - AMD: AMF
 - Intel: QSV
 
 Note: Requires updated drivers and FFmpeg with hardware acceleration support.
+
 </details>
 
 <details>
@@ -623,6 +661,7 @@ Note: Requires updated drivers and FFmpeg with hardware acceleration support.
 ```
 
 #### Resolution Options
+
 - `force_resolution`: Choose video resolution:
   * `"Best"`: Highest available resolution
   * `"Worst"`: Lowest available resolution
@@ -638,7 +677,9 @@ Note: Requires updated drivers and FFmpeg with hardware acceleration support.
     - 144p (256x144)
 
 #### Link Options
+
 - `get_only_link`: Return M3U8 playlist/index URL instead of downloading
+
 </details>
 
 # Global Search
@@ -647,6 +688,7 @@ Note: Requires updated drivers and FFmpeg with hardware acceleration support.
 <summary>🔍 Feature Overview</summary>
 
 You can now search across multiple streaming sites at once using the Global Search feature. This allows you to find content more efficiently without having to search each site individually.
+
 </details>
 
 <details>
@@ -657,6 +699,7 @@ When using Global Search, you have three ways to select which sites to search:
 1. **Search all sites** - Searches across all available streaming sites
 2. **Search by category** - Group sites by their categories (movies, series, anime, etc.)
 3. **Select specific sites** - Choose individual sites to include in your search
+
 </details>
 
 <details>
@@ -665,13 +708,13 @@ When using Global Search, you have three ways to select which sites to search:
 After performing a search:
 
 1. Results are displayed in a consolidated table showing:
+
    - Title
    - Media type (movie, TV series, etc.)
    - Source site
-
 2. Select an item by number to view details or download
-
 3. The system will automatically use the appropriate site's API to handle the download
+
 </details>
 
 <details>
@@ -681,6 +724,7 @@ The Global Search can be configured from the command line:
 
 - `--global` - Perform a global search across multiple sites.
 - `-s`, `--search` - Specify the search terms.
+
 </details>
 
 # Examples of terminal usage
@@ -705,14 +749,17 @@ python test_run.py --global -s "cars"
 <summary>🐳 Basic Setup</summary>
 
 Build the image:
+
 ```
 docker build -t streaming-community-api .
 ```
 
 Run the container with Cloudflare DNS for better connectivity:
+
 ```
-docker run -it --dns 1.1.1.1 -p 8000:8000 streaming-community-api
+docker run -it --dns 1.1.1.1 -p 8000:8000 streaming-community-api script
 ```
+
 </details>
 
 <details>
@@ -721,8 +768,22 @@ docker run -it --dns 1.1.1.1 -p 8000:8000 streaming-community-api
 By default the videos will be saved in `/app/Video` inside the container. To save them on your machine:
 
 ```
-docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video streaming-community-api
+docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video streaming-community-api script
 ```
+
+</details>
+
+<details>
+<summary>📬 Telegram Bot Run</summary>
+
+You can start telegram bot inside docker container:
+
+```
+docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video streaming-community-api bot
+```
+
+Make sure to make .env file under the same directory as the Dockerfile
+
 </details>
 
 <details>
@@ -738,6 +799,7 @@ make LOCAL_DIR=/path/to/download run-container
 ```
 
 The `run-container` command mounts also the `config.json` file, so any change to the configuration file is reflected immediately without having to rebuild the image.
+
 </details>
 
 # Telegram Usage
@@ -755,9 +817,13 @@ Command Functions:
 
 🔹 /list – Displays the status of active downloads, with options to:
 
-Stop an incorrect download using /stop <ID>.
+Stop an incorrect download using /stop `<ID>`.
 
-View the real-time output of a download using /screen <ID>.
+View the real-time output of a download using /screen `<ID>`.
+
+View formatted output using /read `<ID>`
+
+Write input using /input `<ID>` `<Text>`
 
 ⚠ Warning: If a download is interrupted, incomplete files may remain in the folder specified in config.json. These files must be deleted manually to avoid storage or management issues.
 
@@ -772,20 +838,26 @@ TOKEN_TELEGRAM=IlTuo2131TOKEN$12D3Telegram
 AUTHORIZED_USER_ID=12345678
 DEBUG=False
 ```
+
 </details>
 
 <details>
 <summary>📥 Dependencies & Launch</summary>
 
 Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 Start the bot (from /StreamingCommunity/TelegramHelp):
+
 ```bash
 python3 telegram_bot.py
 ```
+
+You can also run Telegram bot inside Docker. See Docker section for more info.
+
 </details>
 
 # Tutorials
@@ -803,16 +875,19 @@ python3 telegram_bot.py
 ## Useful Project
 
 ### 🎯 [Unit3Dup](https://github.com/31December99/Unit3Dup)
+
 Bot in Python per la generazione e l'upload automatico di torrent su tracker basati su Unit3D.
 
-
 ### 🇮🇹 [MammaMia](https://github.com/UrloMythus/MammaMia)
+
 Addon per Stremio che consente lo streaming HTTPS di film, serie, anime e TV in diretta in lingua italiana.
 
 ### 🧩 [streamingcommunity-unofficialapi](https://github.com/Blu-Tiger/streamingcommunity-unofficialapi)
+
 API non ufficiale per accedere ai contenuti del sito italiano StreamingCommunity.
 
 ### 🎥 [stream-buddy](https://github.com/Bbalduzz/stream-buddy)
+
 Tool per guardare o scaricare film dalla piattaforma StreamingCommunity.
 
 # Disclaimer
