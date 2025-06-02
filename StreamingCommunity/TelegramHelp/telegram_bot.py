@@ -11,7 +11,6 @@ import threading
 import subprocess
 import threading
 from typing import Optional
-
 # External libraries
 import telebot
 
@@ -222,7 +221,7 @@ class TelegramBot:
                         if (
                             "titolo" not in script
                             and script["status"] == "running"
-                            and (current_time - script["start_time"]) > 600
+                            and (current_time - script["start_time"]) > 3600
                         ):
                             # Prova a terminare la sessione screen
                             try:
@@ -237,7 +236,7 @@ class TelegramBot:
                                     f" Impossibile fermare la sessione screen con ID {script['screen_id']}."
                                 )
                             print(
-                                f" Lo script con ID {script['screen_id']} ha superato i 10 minuti e verrà rimosso."
+                                f" Lo script con ID {script['screen_id']} ha superato un ora e verrà rimosso."
                             )
                         else:
                             scripts_data_to_save.append(script)
@@ -295,6 +294,16 @@ class TelegramBot:
         @self.bot.message_handler(commands=["screen"])
         def screen_status(message):
             self.handle_screen_status(message)
+
+        #### CUSTOM ####
+        @self.bot.message_handler(commands=["send"])
+        def screen_input(message):
+            self.handle_screen_input(message)
+
+        @self.bot.message_handler(commands=["read"])
+        def screen_output(message):
+            self.handle_screen_output(message)
+        ### END CUSTOM ###
 
         @self.bot.message_handler(func=lambda message: True)
         def handle_all_messages(message):
@@ -422,6 +431,8 @@ class TelegramBot:
                 f"• Stato: {status_icons.get(script['status'], '')}\n"
                 f"• Stop: `/stop {script['screen_id']}`\n"
                 f"• Screen: `/screen {script['screen_id']}`\n"
+                f"• Read: `/read {script['screen_id']}`\n"
+                f"• Write: `/send {script['screen_id']} TEXT`\n"
                 f"• Durata: {duration_str}\n"
                 f"• Download:\n{script.get('titolo', 'N/A')}\n"
             )
@@ -677,10 +688,346 @@ class TelegramBot:
 
     def run(self):
         print(" Avvio del bot...")
-        with open("../../scripts.json", "w") as f:
+        with open("scripts.json", "w") as f:
             json.dump([], f)
         self.bot.infinity_polling()
 
+    ###### ADDON ######
+    def handle_screen_input(self, message):
+        command_parts = message.text.split()
+        if len(command_parts) < 3:
+            print(f" Comando non valido. Usa: /send <ID> <testo>")
+            self.bot.send_message(
+                message.chat.id, " Comando non valido. Usa: /send <ID> <testo>"
+            )
+            return
+
+        screen_id = command_parts[1]
+
+        try:
+            # Verifica se lo screen con l'ID specificato esiste
+            existing_screens = subprocess.check_output(["screen", "-list"]).decode('utf-8')
+            if screen_id not in existing_screens:
+                print(f" La sessione screen con ID {screen_id} non esiste.")
+                self.bot.send_message(message.chat.id, f" La sessione screen con ID {screen_id} non esiste.")
+                return
+
+            # Invia Ctrl+L (carattere ASCII 12) per pulire lo schermo
+            subprocess.run(
+                ["screen", "-S", screen_id, "-X", "stuff", "\x0c"],
+                check=True
+            )
+            #Scrive nella sessione attiva il testo indicato
+            text = command_parts[2] + chr(13) #TODO concatenare più parti
+            subprocess.run(
+                ["screen", "-S", screen_id, "-X", "stuff", text], 
+                check=True,
+            )
+
+        except subprocess.CalledProcessError as e:
+            print(f" Errore durante l'invio del comando alla screen: {e}")
+            self.bot.send_message(
+                message.chat.id,
+                f" Errore durante l'invio del comando alla screen: {e}",
+            )
+            return
+        #Aspetto 1 secondo
+        time.sleep(1)
+        #Mi faccio re-inviare la nuova print
+        self.handle_screen_output(message)
+
+    def handle_screen_output(self, message):
+        command_parts = message.text.split()
+        if len(command_parts) < 2:
+            print(f" ID mancante nel comando. Usa: /read <ID>")
+            self.bot.send_message(
+                message.chat.id, " ID mancante nel comando. Usa: /read <ID>"
+            )
+            return
+
+        screen_id = command_parts[1]
+        temp_file = f"/tmp/screen_output_{screen_id}.txt"
+
+        try:
+            # Verifica se lo screen con l'ID specificato esiste
+            existing_screens = subprocess.check_output(["screen", "-list"]).decode('utf-8')
+            if screen_id not in existing_screens:
+                print(f" La sessione screen con ID {screen_id} non esiste.")
+                self.bot.send_message(message.chat.id, f" La sessione screen con ID {screen_id} non esiste.")
+                return
+
+            # Cattura l'output della screen
+            subprocess.run(
+                ["screen", "-X", "-S", screen_id, "hardcopy", "-h", temp_file],
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            print(f" Errore durante la cattura dell'output della screen: {e}")
+            self.bot.send_message(
+                message.chat.id,
+                f" Errore durante la cattura dell'output della screen: {e}",
+            )
+            return
+
+        if not os.path.exists(temp_file):
+            print(f" Impossibile catturare l'output della screen.")
+            self.bot.send_message(
+                message.chat.id, f" Impossibile catturare l'output della screen."
+            )
+            return
+
+        try:
+            # Leggi il file con la codifica corretta
+            with open(temp_file, "r", encoding="latin-1") as file:
+                screen_output = file.read()
+
+            # Pulisci l'output
+            cleaned_output = re.sub(r"[^\n\r\x20-\x7E]", "", screen_output)  # Rimuovi caratteri di controllo
+            cleaned_output = cleaned_output.replace(
+                "\n\n", "\n"
+            )  # Rimuovi newline multipli
+                    
+            # Inizializza le variabili
+            cleaned_output_0 = None  # o ""
+            cleaned_output_1 = None  # o ""
+
+            # Dentro cleaned_output c'è una stringa recupero quello che si trova tra ## ##
+            download_section = re.search(r"##(.*?)##", cleaned_output, re.DOTALL)
+            if download_section:
+                cleaned_output_0 = "Download: " + download_section.group(1).strip()
+
+            # Recupero tutto quello che viene dopo con ####
+            download_section_bottom = re.search(r"####(.*)", cleaned_output, re.DOTALL)
+            if download_section_bottom:
+                cleaned_output_1 = download_section_bottom.group(1).strip()
+
+            # Unico i due risultati se esistono
+            if cleaned_output_0 and cleaned_output_1:
+                cleaned_output = f"{cleaned_output_0}\n{cleaned_output_1}"
+                # Rimuovo 'segments.py:302' e 'downloader.py:385' se presente
+                cleaned_output = re.sub(r'downloader\.py:\d+', '', cleaned_output)
+                cleaned_output = re.sub(r'segments\.py:\d+', '', cleaned_output)
+            sc = ScreenFormatter()
+            telegram_message = sc.format(text=cleaned_output)
+
+            # Invia l'output pulito
+            print(f" Output della screen {screen_id} formattato:\n{telegram_message}")
+            self.bot.send_message(
+                message.chat.id,
+                f"{telegram_message}",
+                parse_mode="MarkdownV2",
+            )
+        except Exception as e:
+            print(
+                f" Errore durante la lettura o l'invio dell'output della screen: {e}"
+            )
+            self.bot.send_message(
+                message.chat.id,
+                f" Errore durante la lettura o l'invio dell'output della screen: {e}",
+            )
+
+        # Cancella il file temporaneo
+        os.remove(temp_file)
+
+class ScreenFormatter:
+
+    def format(self,text):
+        text = self.discard_old_screen(text)
+        text = self.remove_ascii_art_block(text)
+
+        if self.is_home_screen(text): return self.format_home_screen(text)
+        elif self.is_table(text): return self.format_table(text)        
+        elif self.is_download_screen(text): return self.format_download_blocks(text)        
+        else: return self.escape_markdown_v2(text)
+
+    def is_ascii_line(self,line):
+        # Considera "ASCII-art" una riga se ha almeno l'80% di caratteri non alfanumerici
+        stripped = line.strip()
+        if not stripped:
+            return True
+        non_alnum_ratio = sum(1 for c in stripped if not c.isalnum()) / len(stripped)
+        return non_alnum_ratio >= 0.8
+        
+    def remove_ascii_art_block(self,text):
+        """
+        Rimuove blocchi di righe consecutive che sembrano ASCII art,
+        ossia contenenti solo caratteri non alfanumerici o principalmente simboli.
+        """
+        lines = text.splitlines()
+        cleaned_lines = []
+        ascii_block = []
+
+        inside_ascii = False
+
+        for line in lines:
+            if self.is_ascii_line(line):
+                ascii_block.append(line)
+                inside_ascii = True
+            else:
+                if inside_ascii:
+                    ascii_block = []  # reset, non salviamo blocchi ASCII
+                    inside_ascii = False
+                cleaned_lines.append(line)
+
+        return "\n".join(cleaned_lines).strip()
+
+    def discard_old_screen(self,text):
+        marker = "^L"
+        index = text.rfind(marker)
+        if index == -1:
+            # non trovato, ritorna testo originale
+            return text 
+        else:
+            # ritorna tutto da marker incluso fino alla fine
+            return text[index + len(marker):]
+
+    def escape_markdown_v2(self,text):
+        """
+        Escapa tutti i caratteri speciali per Telegram MarkdownV2.
+        """
+        # Caratteri da escapare secondo la documentazione ufficiale
+        escape_chars = r'_*\[\]()~`>#+-=|{}.!'
+        return re.sub(f'(?<!\\\\)([{re.escape(escape_chars)}])', r'\\\1', text)
+
+    def is_home_screen(self,text):
+        keywords = ["trending films", "trending tv shows", "insert category"]
+        text_lower = text.lower()
+        return all(keyword in text_lower for keyword in keywords)
+
+    def format_home_screen(self,text):
+        # Estrai la sezione "Trending films"
+        text = text.replace('\n', '')
+        films_match = re.search(r"Trending films:(.*?)Trending TV shows:", text, re.DOTALL)
+        films = films_match.group(1).strip() if films_match else "Non trovato"
+
+        # Estrai la sezione "Trending TV shows"
+        tv_match = re.search(r"Trending TV shows:(.*?)Current installed version:", text, re.DOTALL)
+        tv_shows = tv_match.group(1).strip() if tv_match else "Non trovato"
+
+        # Estrai la sezione "Category Legend"
+        legend_match = re.search(r"Category Legend:\s*(.*?)Insert category", text, re.DOTALL)
+        legend_raw = legend_match.group(1).strip() if legend_match else "Non trovato"
+        legend_list = [f"- {item.strip()}" for item in legend_raw.split('|')]
+
+        # Estrai la sezione "Insert category"
+        insert_match = re.search(r"Insert category\s*\s*(.*)", text, re.DOTALL)
+        insert_raw = insert_match.group(1).strip() if insert_match else "Non trovato"
+        insert_lines = re.findall(r'\d\s*:\s*[^,]+', insert_raw)
+        # Componi il testo formattato in una variabile
+        formatted_output = (
+            "🔥 *Trending Films:*\n🎥 " + self.escape_markdown_v2(films) + "\n\n"
+            "📺 *Trending TV Shows:*\n🎞️ " + self.escape_markdown_v2(tv_shows) + "\n\n"
+            "📚 *Category Legend:*\n" + "\n".join(f"🎬 {self.escape_markdown_v2(item)}" for item in legend_list) + "\n\n"
+            "📌 *Insert category:*\n" + "\n".join(f"➡️ {self.escape_markdown_v2(line)}" for line in insert_lines))      
+        return formatted_output      
+    
+    def is_table(self,text):
+        keywords = ["index", "name", "type"]
+        text_lower = text.lower()
+        return all(keyword in text_lower for keyword in keywords)
+
+    def format_table(self,text):
+        pattern = re.compile(r"^\s*(\d+)\s+(.+?)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})", re.MULTILINE)
+        matches = pattern.findall(text)
+
+        type_emojis = {
+            "movie": "🎞️",
+            "tv": "📺",
+            "anime": "🧧"
+        }
+
+        # Costruisci l'output formattato
+        output = ["🎬 *Risultati trovati:*"]
+        for idx, title, media_type, date in matches:
+            emoji = type_emojis.get(media_type.lower(), "📁")
+            line = f"{idx}\\. *{self.escape_markdown_v2(title.strip())}* \\({emoji} {self.escape_markdown_v2(media_type)}\\) \\- _{self.escape_markdown_v2(date)}_"
+            output.append(line)
+        output.append(self.escape_markdown_v2("Type enter for next page, 'q' to quit, or 'back' to search. Insert media index:")) #TODO gestire enter nella write
+
+        formatted_output = "\n".join(output)
+        return formatted_output
+    
+    def is_download_screen(self,text):
+        keywords = ["download:", "you can safely stop the download with"]
+        text_lower = text.lower()
+        return all(keyword in text_lower for keyword in keywords)
+
+    def format_download_block(self, text):
+        # Estrazioni dinamiche
+        title = re.search(r"Download: .*? (.+)", text)
+        video_avail = re.search(r"Video\s+Available: (.+?)\|", text)
+        video_set = re.search(r"Video.+?\| Set: (.+?)\|", text)
+        video_dl = re.search(r"Video.+?Downloadable:\s*([^\n]+)", text)
+
+        codec_avail = re.search(r"Codec\s+Available: (.+?)\|", text)
+        codec_set = re.search(r"Codec.+?\| Set: (.+)", text)
+
+        sub_avail = re.search(r"Subtitle\s+Available: (.+?)\|", text)
+        sub_set = re.search(r"Subtitle.+?\| Set: (.+?)\|", text)
+        sub_dl = re.search(r"Subtitle.+?Downloadable:\s*([^\n]+)", text)
+
+        audio_avail = re.search(r"Audio\s+Available: (.+?)\|", text)
+        audio_set = re.search(r"Audio.+?\| Set: (.+?)\|", text)
+        audio_dl = re.search(r"Audio.+?Downloadable:\s*([^\n]+)", text)
+
+        progress_video = re.search(r"\[HLS\] \(Video\): (.+)", text)
+        progress_audio = re.search(r"\[HLS\] \(Audio.*?\): (.+)", text)
+
+        # Composizione del messaggio
+        lines = []
+
+        if title:
+            lines.append(f"*🎬 Titolo:* *{self.escape_markdown_v2(title.group(1).strip())}*")
+        if "already exists" in text:
+            lines.append("✅ Già scaricato")
+
+        if video_avail:
+            lines.append(f"📺 Risoluzioni disponibili: {self.escape_markdown_v2(video_avail.group(1).strip())}")
+        
+        if video_set:
+            lines.append(f"📐 Risoluzione scelta: {self.escape_markdown_v2(video_set.group(1).strip())}")
+        """
+        if video_dl:
+            lines.append(f"⬇️ Scaricabile: {self.escape_markdown_v2(video_dl.group(1).strip())}")
+
+        if codec_avail:
+            lines.append(f"🎞️ Codec: {self.escape_markdown_v2(codec_avail.group(1).strip())}")
+        if codec_set:
+            lines.append(f"🎚️ Modalità: {self.escape_markdown_v2(codec_set.group(1).strip())}")
+        
+        if sub_avail:
+            lines.append(f"💬 Sottotitoli: {self.escape_markdown_v2(sub_avail.group(1).strip())}")
+        if sub_set:
+            lines.append(f"🌐 Selezionati: {self.escape_markdown_v2(sub_set.group(1).strip())}")
+        if sub_dl:
+            lines.append(f"⬇️ Scaricabili: {self.escape_markdown_v2(sub_dl.group(1).strip())}")
+        """
+        if audio_avail:
+            lines.append(f"🔊 Audio: {self.escape_markdown_v2(audio_avail.group(1).strip())}")
+        if audio_set:
+            lines.append(f"🎧 Selezionato: {self.escape_markdown_v2(audio_set.group(1).strip())}")
+        if audio_dl:
+            lines.append(f"⬇️ Scaricabile: {self.escape_markdown_v2(audio_dl.group(1).strip())}")
+
+        if progress_video:
+            lines.append(f"📥 Progresso Video: {self.escape_markdown_v2(progress_video.group(1).strip())}")
+        if progress_audio:
+            lines.append(f"🎙️ Progresso Audio: {self.escape_markdown_v2(progress_audio.group(1).strip())}")
+
+        return "\n".join(lines)
+
+    def format_download_blocks(self,full_text):
+        blocks = re.split(r"(?=Download:)", full_text)
+        messages = []
+
+        for block in blocks:
+            block = block.strip()
+            if not block:
+                continue
+            msg = self.format_download_block(block)
+            messages.append(msg)
+
+        return "\n\n".join(messages)
 
 def get_bot_instance():
     return TelegramBot.get_instance()
