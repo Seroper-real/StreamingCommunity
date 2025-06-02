@@ -779,7 +779,7 @@ docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video stream
 You can start telegram bot inside docker container:
 
 ```
-docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video streaming-community-api bot
+docker run -it --dns 9.9.9.9 -p 8000:8000 -v /path/to/download:/app/Video --name streaming-community-bot streaming-community-api bot
 ```
 
 Make sure to make .env file under the same directory as the Dockerfile
