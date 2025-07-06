@@ -140,7 +140,7 @@ class ConfigManager:
         console.print(f"[bold cyan]Downloading reference configuration:[/bold cyan] [green]{self.reference_config_url}[/green]")
 
         try:
-            response = requests.get(self.reference_config_url, timeout=8, headers={'User-Agent': get_userAgent()})
+            response = requests.get(self.reference_config_url, timeout=8, headers={'User-Agent': get_userAgent()}, verify=self.get_bool('REQUESTS', 'verify'))
             
             if response.status_code == 200:
                 with open(self.file_path, 'wb') as f:
@@ -275,7 +275,7 @@ class ConfigManager:
         }
         
         try:
-            console.print(f"[bold cyan]Retrieving site data from GitHub:[/bold cyan] [green]{domains_github_url}[/green]")
+            console.print("[bold cyan]Retrieving site data from GitHub:[/bold cyan]")
             response = requests.get(domains_github_url, timeout=8, headers=headers)
 
             if response.ok:
@@ -344,7 +344,7 @@ class ConfigManager:
         try:
             logging.info(f"Downloading {filename} from {url}...")
             console.print(f"[bold cyan]File download:[/bold cyan] {os.path.basename(filename)}")
-            response = requests.get(url, timeout=8, headers={'User-Agent': get_userAgent()})
+            response = requests.get(url, timeout=8, headers={'User-Agent': get_userAgent()}, verify=self.get_bool('REQUESTS', 'verify'))
             
             if response.status_code == 200:
                 with open(filename, 'wb') as f:

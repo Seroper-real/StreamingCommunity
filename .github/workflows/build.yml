@@ -76,6 +76,9 @@ jobs:
             separator: ':'
 
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout repository
@@ -122,6 +125,8 @@ jobs:
             --hidden-import=Cryptodome.Util --hidden-import=Cryptodome.Util.Padding \
             --hidden-import=Cryptodome.Random \
             --hidden-import=telebot \
+            --hidden-import=curl_cffi --hidden-import=_cffi_backend \
+            --collect-all curl_cffi \
             --additional-hooks-dir=pyinstaller/hooks \
             --add-data "StreamingCommunity${{ matrix.separator }}StreamingCommunity" \
             --name=${{ matrix.artifact_name }} test_run.py
@@ -133,9 +138,10 @@ jobs:
           path: dist/${{ matrix.executable }}
 
       - name: Create or update release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.latest_tag }}
+          tag_name: ${{ github.ref_name }}
           files: dist/${{ matrix.executable }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,16 +6,16 @@
     "time_change": "2025-03-19 12:20:19"
   },
   "cb01new": {
-    "domain": "life",
-    "full_url": "https://cb01net.life/",
-    "old_domain": "download",
-    "time_change": "2025-06-01 01:02:16"
+    "domain": "today",
+    "full_url": "https://cb01net.today/",
+    "old_domain": "world",
+    "time_change": "2025-07-01 07:22:25"
   },
   "animeunity": {
     "domain": "so",
-    "full_url": "https://www.animeunity.so/",
+    "full_url": "http://www.animeunity.so/",
     "old_domain": "so",
-    "time_change": "2025-03-19 12:20:23"
+    "time_change": "2025-07-04 14:19:55"
   },
   "animeworld": {
     "domain": "ac",
@@ -24,10 +24,10 @@
     "time_change": "2025-03-21 12:20:27"
   },
   "guardaserie": {
-    "domain": "meme",
-    "full_url": "https://guardaserie.meme/",
+    "domain": "kaufen",
+    "full_url": "https://guardaserie.kaufen/",
     "old_domain": "meme",
-    "time_change": "2025-03-19 12:20:24"
+    "time_change": "2025-07-02 12:42:58"
   },
   "ddlstreamitaly": {
     "domain": "co",
@@ -42,21 +42,21 @@
     "time_change": "2025-04-29 12:30:30"
   },
   "altadefinizione": {
-    "domain": "spa",
-    "full_url": "https://altadefinizione.spa/",
-    "old_domain": "locker",
-    "time_change": "2025-05-26 23:22:45"
+    "domain": "free",
+    "full_url": "http://altadefinizione.free/",
+    "old_domain": "qpon",
+    "time_change": "2025-07-06 16:24:34"
   },
   "streamingcommunity": {
-    "domain": "bio",
-    "full_url": "https://streamingunity.bio/",
-    "old_domain": "blog",
-    "time_change": "2025-05-31 12:17:33"
+    "domain": "cloud",
+    "full_url": "https://streamingunity.cloud/",
+    "old_domain": "life",
+    "time_change": "2025-07-02 11:18:46"
   },
   "altadefinizionegratis": {
-    "domain": "cc",
-    "full_url": "https://altadefinizionegratis.cc/",
-    "old_domain": "icu",
-    "time_change": "2025-06-02 10:35:25"
+    "domain": "life",
+    "full_url": "https://altadefinizionegratis.life/",
+    "old_domain": "blog",
+    "time_change": "2025-06-30 21:19:36"
   }
 }

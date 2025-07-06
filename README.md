@@ -1,33 +1,29 @@
-<p align="center">
-  <img src="https://i.ibb.co/v6RnT0wY/s2.jpg" alt="Project Logo" width="450"/>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="https://pypi.org/project/streamingcommunity">
-    <img src="https://img.shields.io/pypi/v/streamingcommunity?logo=pypi&labelColor=555555&style=for-the-badge" alt="PyPI"/>
-  </a>
-  <a href="https://www.paypal.com/donate/?hosted_button_id=UXTWMT8P6HE2C">
-    <img src="https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge" alt="Donate"/>
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/commits">
-    <img src="https://img.shields.io/github/commit-activity/m/Arrowar/StreamingCommunity?label=commits&style=for-the-badge" alt="Commits"/>
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/commits">
-    <img src="https://img.shields.io/github/last-commit/Arrowar/StreamingCommunity/main?label=&style=for-the-badge&display_timestamp=committer" alt="Last Commit"/>
-  </a>
-</p>
+## 📊 Project Status & Info
 
-<p align="center">
-  <a href="https://github.com/Arrowar/StreamingCommunity/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-GPL_3.0-blue.svg?style=for-the-badge" alt="License"/>
-  </a>
-  <a href="https://pypi.org/project/streamingcommunity">
-    <img src="https://img.shields.io/pypi/dm/streamingcommunity?style=for-the-badge" alt="PyPI Downloads"/>
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity">
-    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Arrowar/StreamingCommunity/main/.github/media/loc-badge.json&style=for-the-badge" alt="Lines of Code"/>
-  </a>
-</p>
+[![PyPI Version](https://img.shields.io/pypi/v/streamingcommunity?logo=pypi&logoColor=white&labelColor=2d3748&color=3182ce&style=for-the-badge)](https://pypi.org/project/streamingcommunity)
+[![Downloads](https://img.shields.io/pypi/dm/streamingcommunity?logo=pypi&logoColor=white&labelColor=2d3748&color=38a169&style=for-the-badge)](https://pypi.org/project/streamingcommunity)
+[![License](https://img.shields.io/github/license/Arrowar/StreamingCommunity?logo=gnu&logoColor=white&labelColor=2d3748&color=e53e3e&style=for-the-badge)](https://github.com/Arrowar/StreamingCommunity/blob/main/LICENSE)
+
+[![Code Lines](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Arrowar/StreamingCommunity/main/.github/.domain/loc-badge.json&style=for-the-badge&labelColor=2d3748)](https://github.com/Arrowar/StreamingCommunity)
+[![Last Commit](https://img.shields.io/github/last-commit/Arrowar/StreamingCommunity?logo=git&logoColor=white&labelColor=2d3748&color=805ad5&style=for-the-badge)](https://github.com/Arrowar/StreamingCommunity/commits)
+[![Issues](https://img.shields.io/github/issues/Arrowar/StreamingCommunity?logo=github&logoColor=white&labelColor=2d3748&color=ed8936&style=for-the-badge)](https://github.com/Arrowar/StreamingCommunity/issues)
+
+## 💝 Support the Project
+
+[![Donate PayPal](https://img.shields.io/badge/💳_Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white&labelColor=2d3748)](https://www.paypal.com/donate/?hosted_button_id=UXTWMT8P6HE2C)
+## 🚀 Download & Install
+
+[![Windows](https://img.shields.io/badge/🪟_Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white&labelColor=2d3748)](https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_win.exe)
+[![macOS](https://img.shields.io/badge/🍎_macOS-000000?style=for-the-badge&logo=apple&logoColor=white&labelColor=2d3748)](https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_mac)
+[![Linux latest](https://img.shields.io/badge/🐧_Linux_latest-FCC624?style=for-the-badge&logo=linux&logoColor=black&labelColor=2d3748)](https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_linux_latest)
+[![Linux 22.04](https://img.shields.io/badge/🐧_Linux_22.04-FCC624?style=for-the-badge&logo=linux&logoColor=black&labelColor=2d3748)](https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_linux_previous)
+---
+
+*⚡ **Quick Start:** `pip install streamingcommunity` or download the executable for your platform above*
+
+</div>
 
 # 📋 Table of Contents
 
@@ -79,24 +75,6 @@
 </details>
 
 # Installation
-
-<p align="center">
-  <a href="https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_win.exe">
-    <img src="https://img.shields.io/badge/-Windows-blue.svg?style=for-the-badge&logo=windows" alt="Windows">
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_mac">
-    <img src="https://img.shields.io/badge/-macOS-black.svg?style=for-the-badge&logo=apple" alt="macOS">
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_linux">
-    <img src="https://img.shields.io/badge/-Linux-orange.svg?style=for-the-badge&logo=linux" alt="Linux">
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/releases/latest/download/StreamingCommunity_linux_previous">
-    <img src="https://img.shields.io/badge/-Linux Previous-gray.svg?style=for-the-badge&logo=linux" alt="Linux Previous">
-  </a>
-  <a href="https://github.com/Arrowar/StreamingCommunity/releases">
-    <img src="https://img.shields.io/badge/-All Versions-lightgrey.svg?style=for-the-badge&logo=github" alt="All Versions">
-  </a>
-</p>
 
 ## 1. PyPI Installation
 
@@ -544,7 +522,7 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
         "download_subtitle": true,
         "merge_subs": true,
         "specific_list_subtitles": [
-            "ita",
+            "ita",    // Specify language codes or use ["*"] to download all available subtitles
             "eng"
         ],
         "cleanup_tmp_folder": true
@@ -573,6 +551,8 @@ To enable qBittorrent integration, follow the setup guide [here](https://github.
 - `download_subtitle`: Whether to download subtitles
 - `merge_subs`: Whether to merge subtitles with video
 - `specific_list_subtitles`: List of subtitle languages to download
+  * Use `["*"]` to download all available subtitles
+  * Or specify individual languages like `["ita", "eng"]`
   * Can be changed with `--specific_list_subtitles ita,eng`
 
 #### Cleanup
@@ -739,8 +719,14 @@ python test_run.py --specific_list_audio ita,eng --specific_list_subtitles eng,s
 # Keep console open after download
 python test_run.py --not_close true
 
-# Use global search
+# Use global searchAdd commentMore actions
 python test_run.py --global -s "cars"
+
+# Select specific category
+python test_run.py --category 1       # Search in anime category
+python test_run.py --category 2       # Search in movies & series
+python test_run.py --category 3       # Search in series
+python test_run.py --category 4       # Search in torrent category
 ```
 
 # Docker
@@ -862,10 +848,10 @@ You can also run Telegram bot inside Docker. See Docker section for more info.
 
 # Tutorials
 
-- [Windows Tutorial](https://www.youtube.com/watch?v=mZGqK4wdN-k)
-- [Linux Tutorial](https://www.youtube.com/watch?v=0qUNXPE_mTg)
-- [Pypy Tutorial](https://www.youtube.com/watch?v=C6m9ZKOK0p4)
-- [Compiled .exe Tutorial](https://www.youtube.com/watch?v=pm4lqsxkTVo)
+- [Windows](https://www.youtube.com/watch?v=mZGqK4wdN-k)
+- [Linux](https://www.youtube.com/watch?v=0qUNXPE_mTg)
+- [Pypy](https://www.youtube.com/watch?v=C6m9ZKOK0p4)
+- [Compiled](https://www.youtube.com/watch?v=pm4lqsxkTVo)
 
 # To Do
 
@@ -889,6 +875,7 @@ API non ufficiale per accedere ai contenuti del sito italiano StreamingCommunity
 ### 🎥 [stream-buddy](https://github.com/Bbalduzz/stream-buddy)
 
 Tool per guardare o scaricare film dalla piattaforma StreamingCommunity.
+
 
 # Disclaimer
 

@@ -156,7 +156,7 @@ class M3U8Manager:
         If it's a master playlist, only selects video stream.
         """
         if not self.is_master:
-            self.video_url, self.video_res = self.m3u8_url, "0p"
+            self.video_url, self.video_res = self.m3u8_url, "undefined"
             self.audio_streams = []
             self.sub_streams = []
 
@@ -165,8 +165,9 @@ class M3U8Manager:
                 self.video_url, self.video_res = self.parser._video.get_best_uri()
             elif str(FILTER_CUSTOM_REOLUTION) == "worst":
                 self.video_url, self.video_res = self.parser._video.get_worst_uri()
-            elif "p" in str(FILTER_CUSTOM_REOLUTION):
-                self.video_url, self.video_res = self.parser._video.get_custom_uri(int(FILTER_CUSTOM_REOLUTION.replace("p", "")))
+            elif str(FILTER_CUSTOM_REOLUTION).replace("p", "").replace("px", "").isdigit():
+                resolution_value = int(str(FILTER_CUSTOM_REOLUTION).replace("p", "").replace("px", ""))
+                self.video_url, self.video_res = self.parser._video.get_custom_uri(resolution_value)
             else:
                 logging.error("Resolution not recognized.")
                 self.video_url, self.video_res = self.parser._video.get_best_uri()
@@ -180,10 +181,14 @@ class M3U8Manager:
 
             self.sub_streams = []
             if ENABLE_SUBTITLE:
-                self.sub_streams = [
-                    s for s in (self.parser._subtitle.get_all_uris_and_names() or [])
-                    if s.get('language') in DOWNLOAD_SPECIFIC_SUBTITLE
-                ]
+                if "*" in DOWNLOAD_SPECIFIC_SUBTITLE:
+                    self.sub_streams = self.parser._subtitle.get_all_uris_and_names() or []
+
+                else:
+                    self.sub_streams = [
+                        s for s in (self.parser._subtitle.get_all_uris_and_names() or [])
+                        if s.get('language') in DOWNLOAD_SPECIFIC_SUBTITLE
+                    ]
 
     def log_selection(self):
         tuple_available_resolution = self.parser._video.get_list_resolution()
@@ -209,9 +214,13 @@ class M3U8Manager:
                 f"[red]Set:[/red] {set_codec_info}"
             )
 
+        # Get available subtitles and their languages
         available_subtitles = self.parser._subtitle.get_all_uris_and_names() or []
         available_sub_languages = [sub.get('language') for sub in available_subtitles]
-        downloadable_sub_languages = list(set(available_sub_languages) & set(DOWNLOAD_SPECIFIC_SUBTITLE))
+        
+        # If "*" is in DOWNLOAD_SPECIFIC_SUBTITLE, all languages are downloadable
+        downloadable_sub_languages = available_sub_languages if "*" in DOWNLOAD_SPECIFIC_SUBTITLE else list(set(available_sub_languages) & set(DOWNLOAD_SPECIFIC_SUBTITLE))
+            
         if available_sub_languages:
             console.print(
                 f"[cyan bold]Subtitle [/cyan bold] [green]Available:[/green] [purple]{', '.join(available_sub_languages)}[/purple] | "

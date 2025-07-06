@@ -5,9 +5,9 @@ import logging
 
 
 # External libraries
-import httpx
 import jsbeautifier
 from bs4 import BeautifulSoup
+from curl_cffi import requests
 
 
 # Internal utilities
@@ -17,6 +17,7 @@ from StreamingCommunity.Util.headers import get_headers
 
 # Variable
 MAX_TIMEOUT = config_manager.get_int("REQUESTS", "timeout")
+REQUEST_VERIFY = config_manager.get_bool('REQUESTS', 'verify')
 
 
 class VideoSource:
@@ -28,7 +29,6 @@ class VideoSource:
             - url (str): The URL of the video source.
         """
         self.headers = get_headers()
-        self.client = httpx.Client()
         self.url = url
 
     def make_request(self, url: str) -> str:
@@ -42,8 +42,10 @@ class VideoSource:
             - str: The response content if successful, None otherwise.
         """
         try:
-            response = self.client.get(url, headers=self.headers, timeout=MAX_TIMEOUT, follow_redirects=True)
-            response.raise_for_status()
+            response = requests.get(url, headers=self.headers, timeout=MAX_TIMEOUT, impersonate="chrome110", verify=REQUEST_VERIFY)
+            if response.status_code >= 400:
+                logging.error(f"Request failed with status code: {response.status_code}")
+                return None
             return response.text
         
         except Exception as e:

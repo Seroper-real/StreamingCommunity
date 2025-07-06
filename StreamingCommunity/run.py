@@ -9,6 +9,7 @@ import platform
 import argparse
 import importlib
 import threading, asyncio
+from urllib.parse import urlparse
 from typing import Callable
 
 
@@ -153,6 +154,7 @@ def initialize():
     except:
         console.log("[red]Error with loading github.")
 
+
 def restart_script():
     """Riavvia lo script con gli stessi argomenti della riga di comando."""
     print("\nRiavvio dello script...\n")
@@ -191,6 +193,11 @@ def force_exit():
     os._exit(0)
 
 
+def _extract_hostname(url_string: str) -> str:
+    """Safely extracts the hostname from a URL string."""
+    return urlparse(url_string).hostname
+
+
 def main(script_id = 0):
 
     color_map = {
@@ -198,6 +205,13 @@ def main(script_id = 0):
         "film_&_serie": "yellow",
         "serie": "blue",
         "torrent": "white"
+    }
+
+    category_map = {
+        1: "anime",
+        2: "film_&_serie",
+        3: "serie",
+        4: "torrent"
     }
 
     if TELEGRAM_BOT:
@@ -209,20 +223,11 @@ def main(script_id = 0):
     # Create logger
     log_not = Logger()
     initialize()
-    
-    # if not internet_manager.check_dns_provider():
-    #     print()
-    #     console.print("[red]❌ ERROR: DNS configuration is required!")
-    #     console.print("[red]The program cannot function correctly without proper DNS settings.")
-    #     console.print("[yellow]Please configure one of these DNS servers:")
-    #     console.print("[blue]• Cloudflare (1.1.1.1) 'https://developers.cloudflare.com/1.1.1.1/setup/windows/'")
-    #     console.print("[blue]• Quad9 (9.9.9.9) 'https://docs.quad9.net/Setup_Guides/Windows/Windows_10/'")
-    #     console.print("\n[yellow]⚠️ The program will not work until you configure your DNS settings.")
 
-    #     time.sleep(2)        
-    #     msg.ask("[yellow]Press Enter to continue ...")
+    # Get all site hostname
+    hostname_list = [hostname for site_info in config_manager.configSite.values() if (hostname := _extract_hostname(site_info.get('full_url')))]
 
-    if not internet_manager.check_dns_resolve():
+    if not internet_manager.check_dns_resolve(hostname_list):
         print()
         console.print("[red]❌ ERROR: DNS configuration is required!")
         console.print("[red]The program cannot function correctly without proper DNS settings.")
@@ -271,6 +276,11 @@ def main(script_id = 0):
     # Add global search option
     parser.add_argument(
         '--global', action='store_true', help='Perform a global search across multiple sites.'
+    )
+
+    # Add category selection argument
+    parser.add_argument(
+        '--category', type=int, help='Select category directly (1: anime, 2: film_&_serie, 3: serie, 4: torrent).'
     )
 
     # Add arguments for search functions
@@ -322,35 +332,60 @@ def main(script_id = 0):
         except Exception as e:
             console.print(f"[red]Error mapping module {module_name}: {str(e)}")
 
-    # Display the category legend
-    legend_text = " | ".join([f"[{color}]{category.capitalize()}[/{color}]" for category, color in color_map.items()])
-    console.print(f"\n[bold green]Category Legend:[/bold green] {legend_text}")
+    if args.category:
+        selected_category = category_map.get(args.category)
+        category_sites = []
+        for key, label in choice_labels.items():
+            if label[1] == selected_category:
+                category_sites.append((key, label[0]))
 
-    # Construct prompt with proper color mapping
-    prompt_message = "[green]Insert category [white](" + ", ".join(
-        [f"[{color_map.get(label[1], 'white')}]{key}: {label[0]}[/{color_map.get(label[1], 'white')}]" 
-         for key, label in choice_labels.items()]
-    ) + "[white])"
+        if len(category_sites) == 1:
+            category = category_sites[0][0]
+            console.print(f"[green]Selezionato automaticamente: {category_sites[0][1]}[/green]")
 
-    if TELEGRAM_BOT:
-        category_legend_str = "Categorie: \n" + " | ".join([
-            f"{category.capitalize()}" for category in color_map.keys()
-        ])
-
-        prompt_message = "Inserisci il sito:\n" + "\n".join(
-            [f"{key}: {label[0]}" for key, label in choice_labels.items()]
-        )
-
-        console.print(f"\n{prompt_message}")
-
-        category = bot.ask(
-            "select_provider",
-            f"{category_legend_str}\n\n{prompt_message}",
-            None
-        )
+        else:
+            sito_prompt_items = [f"[{color_map.get(selected_category, 'white')}]({k}) {v}[/{color_map.get(selected_category, 'white')}]" 
+                               for k, v in category_sites]
+            sito_prompt_line = ", ".join(sito_prompt_items)
+            
+            if TELEGRAM_BOT:
+                console.print(f"\nInsert site: {sito_prompt_line}")
+                category = bot.ask(
+                    "select_site",
+                    f"Insert site: {sito_prompt_line}",
+                    None
+                )
+            else:
+                category = msg.ask(f"\n[cyan]Insert site: {sito_prompt_line}", choices=[k for k, _ in category_sites], show_choices=False)
 
     else:
-        category = msg.ask(prompt_message, choices=list(choice_labels.keys()), default="0", show_choices=False, show_default=False)
+        legend_text = " | ".join([f"[{color}]{category.capitalize()}[/{color}]" for category, color in color_map.items()])
+        console.print(f"\n[bold cyan]Category Legend:[/bold cyan] {legend_text}")
+
+        prompt_message = "[cyan]Insert site: " + ", ".join(
+            [f"[{color_map.get(label[1], 'white')}]({key}) {label[0]}[/{color_map.get(label[1], 'white')}]" 
+             for key, label in choice_labels.items()]
+        )
+
+        if TELEGRAM_BOT:
+            category_legend_str = "Categorie: \n" + " | ".join([
+                f"{category.capitalize()}" for category in color_map.keys()
+            ])
+
+            prompt_message_telegram = "Inserisci il sito:\n" + "\n".join(
+                [f"{key}: {label[0]}" for key, label in choice_labels.items()]
+            )
+
+            console.print(f"\n{prompt_message_telegram}")
+
+            category = bot.ask(
+                "select_provider",
+                f"{category_legend_str}\n\n{prompt_message_telegram}",
+                None
+            )
+
+        else:
+            category = msg.ask(prompt_message, choices=list(choice_labels.keys()), default="0", show_choices=False, show_default=False)
 
     # Run the corresponding function based on user input
     if category in input_to_function:
